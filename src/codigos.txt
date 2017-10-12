@@ -1,0 +1,6 @@
+enade01,aacc03,aacc02,aacc01,mob001,trt002,prj005,eed006,eic001
+enade01,trt002
+enade01,aacc03,aacc02,aacc01,mob001
+trt002
+prj005,eed006,eic001
+
