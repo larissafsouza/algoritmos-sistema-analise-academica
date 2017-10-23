@@ -1,0 +1,29 @@
+* Size: 15
+* LISTA DE EXCLUIDOS DO PERFIL
+[db81c3486a32780f494ece1f3ba83bf1, dcc4db16dcf0b6e468562beb6bde294a, ee7f132030eaaae5acff82aae5aa27c8, f84525ce69a13442a3cc024af8f0afd0, f981bb7abc6a935bcd27ed4be29e03ae]
+
+* LISTA DE ALUNOS DO CONJUNTO
+[009a2c0acaf8afa57e18b9ec422fd2c3, 034f31ceb711868957b92046b86197f6, 082994e9dcb442f74ed98b4c380df0dd, 0d814c1115f36f7e18c1984136e3fd89, 26fbfe1edeb0dbab4f3300359fef9eec, 283b68d2afc36fe52cf17ccfc022409f, 373c488db9597b8bebf8314ad5486778, 4102f0239a729308d744605872aacbb4, 43e25f6942c383151e868a303e43847f, 74934243b93c9a6ee96d7f54fe0b337b, 7801a3cd27fee4ad031f16e26ac745cf, a58aa70e11e251a35674e728318e155e, ac776170068c61fca275091cc01287c1, b1b6c49e7552035b354004c88e303688, c12f45b0c37ca661eef0537f0d17b0dd]
+
+* Lista dos alunos do conjunto com suas médias:
+[[c12f45b0c37ca661eef0537f0d17b0dd, 0.9022821634072543], [b1b6c49e7552035b354004c88e303688, 0.8878388885740504], [ac776170068c61fca275091cc01287c1, 0.9029640347503315], [a58aa70e11e251a35674e728318e155e, 0.8960383036877907], [7801a3cd27fee4ad031f16e26ac745cf, 0.897727192357386], [0d814c1115f36f7e18c1984136e3fd89, 0.8758363544482003], [034f31ceb711868957b92046b86197f6, 0.7753322596130549], [082994e9dcb442f74ed98b4c380df0dd, 0.8342799223237625], [009a2c0acaf8afa57e18b9ec422fd2c3, 0.9051020464742624], [26fbfe1edeb0dbab4f3300359fef9eec, 0.8965903506926162], [43e25f6942c383151e868a303e43847f, 0.9030423973253828], [283b68d2afc36fe52cf17ccfc022409f, 0.8825131576031914], [373c488db9597b8bebf8314ad5486778, 0.805496000876436], [4102f0239a729308d744605872aacbb4, 0.9030423973253828], [74934243b93c9a6ee96d7f54fe0b337b, 0.8867503894590292]]
+
+* Aluno representante: 034f31ceb711868957b92046b86197f6
+* Distancia Média: 0.7753322596130549
+ 
+* Aluno mais distante do representante: c12f45b0c37ca661eef0537f0d17b0dd
+* Distancia máxima encontrada: 0.7091754368348431
+
+1) total de alunos no mundo (sem todos os alunos do perfil selecionado) = 728
+2) total de alunos no mundo (com os excluidos do conjunto) = 733
+
+* Tamanho da lista dos alunos excluídos do conjunto e classificados como pertences ao perfil: 4 (80%)
+* Tamanho da lista dos alunos excluídos do conjunto e classificados como não pertences ao perfil: 1 (20%)
+
+* Tamanho da lista dos alunos em geral classificados como pertences ao perfil: 469
+1) 465 = 64%
+2) 469 = 64% 
+
+* Tamanho da lista dos alunos em geral classificados como não pertences ao perfil: 264
+1) 263 = 36%
+2) 264 = 36%

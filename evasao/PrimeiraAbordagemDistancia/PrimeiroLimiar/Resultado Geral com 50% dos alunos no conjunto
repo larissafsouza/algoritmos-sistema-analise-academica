@@ -1,0 +1,31 @@
+* Size: 10
+* LISTA DE EXCLUIDOS DO PERFIL
+[7801a3cd27fee4ad031f16e26ac745cf, a58aa70e11e251a35674e728318e155e, ac776170068c61fca275091cc01287c1, b1b6c49e7552035b354004c88e303688, c12f45b0c37ca661eef0537f0d17b0dd, db81c3486a32780f494ece1f3ba83bf1, dcc4db16dcf0b6e468562beb6bde294a, ee7f132030eaaae5acff82aae5aa27c8, f84525ce69a13442a3cc024af8f0afd0, f981bb7abc6a935bcd27ed4be29e03ae]
+
+* LISTA DE ALUNOS DO CONJUNTO
+[009a2c0acaf8afa57e18b9ec422fd2c3, 034f31ceb711868957b92046b86197f6, 082994e9dcb442f74ed98b4c380df0dd, 0d814c1115f36f7e18c1984136e3fd89, 26fbfe1edeb0dbab4f3300359fef9eec, 283b68d2afc36fe52cf17ccfc022409f, 373c488db9597b8bebf8314ad5486778, 4102f0239a729308d744605872aacbb4, 43e25f6942c383151e868a303e43847f, 74934243b93c9a6ee96d7f54fe0b337b]
+
+* Lista dos alunos do conjunto com suas médias:
+[[74934243b93c9a6ee96d7f54fe0b337b, 0.8730645829538265], [4102f0239a729308d744605872aacbb4, 0.8710783647945245], [373c488db9597b8bebf8314ad5486778, 0.7954107339146474], [283b68d2afc36fe52cf17ccfc022409f, 0.8651350957249553], [43e25f6942c383151e868a303e43847f, 0.8710783647945245], [26fbfe1edeb0dbab4f3300359fef9eec, 0.8712995188567454], [009a2c0acaf8afa57e18b9ec422fd2c3, 0.8772379801564444], [082994e9dcb442f74ed98b4c380df0dd, 0.8223040068807463], [034f31ceb711868957b92046b86197f6, 0.7661838125868534], [0d814c1115f36f7e18c1984136e3fd89, 0.8577540060647358]]
+
+* Aluno representante: 034f31ceb711868957b92046b86197f6
+* Distancia Média: 0.7661838125868534
+
+* Aluno mais distante do representante: 4102f0239a729308d744605872aacbb4
+* Distancia máxima encontrada: 0.6821730749920393
+
+1) total de alunos no mundo (sem todos os alunos do perfil selecionado) = 728
+2) total de alunos no mundo (com os excluidos do conjunto) = 738
+
+* Tamanho da lista dos alunos excluídos do conjunto e classificados como pertences ao perfil: 8 (80%)
+* Tamanho da lista dos alunos excluídos do conjunto e classificados como não pertences ao perfil: 2 (20%)
+ 
+* Total : 749
+
+* Tamanho da lista dos alunos em geral classificados como pertences ao perfil: 479
+1) 471 = 65 %
+2) 479 = 65%
+ 
+* Tamanho da lista dos alunos em geral classificados como não pertences ao perfil: 259
+1) 257 = 35%
+2) 259 = 35%
