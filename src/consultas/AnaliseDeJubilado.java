@@ -55,16 +55,13 @@ public class AnaliseDeJubilado {
 				size++;
 			}
 			
-			System.out.println("size before");
-			System.out.println(size);
-			
 			int count = 1;
 			BasicDBObject document = new BasicDBObject();
 			DBCollection trainingSet = null;
 			// training_set2 com um aumento de alunos do conjunto
 			try {
 				trainingSet = MongoConnection.getInstance().getDB().getCollection(
-				"training_set"+forma_saida.toLowerCase().trim().replace(" ", "").replace("(crit.01)", "").replace("(crit.02)", "02")+"_"+current_curso.toLowerCase().trim().replace(" ", "_"));
+				"training_set2"+forma_saida.toLowerCase().trim().replace(" ", "").replace("(crit.01)", "").replace("(crit.02)", "02")+"_"+current_curso.toLowerCase().trim().replace(" ", "_"));
 			} catch (UnknownHostException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -242,7 +239,7 @@ public class AnaliseDeJubilado {
 		
 		try {
 			trainingSet = MongoConnection.getInstance().getDB().getCollection(
-			"training_set"+forma_saida.toLowerCase().trim().replace(" ", "").replace("(crit.01)", "").replace("(crit.02)", "02")+"_"+current_curso.toLowerCase().trim().replace(" ", "_"));
+			"training_set2"+forma_saida.toLowerCase().trim().replace(" ", "").replace("(crit.01)", "").replace("(crit.02)", "02")+"_"+current_curso.toLowerCase().trim().replace(" ", "_"));
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -266,7 +263,7 @@ public class AnaliseDeJubilado {
 		DBCollection trainingSet = null;
 		try {
 			trainingSet = MongoConnection.getInstance().getDB().getCollection(
-			"training_set"+forma_saida.toLowerCase().trim().replace(" ", "").replace("(crit.01)", "").replace("(crit.02)", "02")+"_"+current_curso.toLowerCase().trim().replace(" ", "_"));
+			"training_set2"+forma_saida.toLowerCase().trim().replace(" ", "").replace("(crit.01)", "").replace("(crit.02)", "02")+"_"+current_curso.toLowerCase().trim().replace(" ", "_"));
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -313,7 +310,7 @@ public class AnaliseDeJubilado {
 		DBCollection trainingSet = null;
 		try {
 			trainingSet = MongoConnection.getInstance().getDB().getCollection(
-			"training_set"+forma_saida.toLowerCase().trim().replace(" ", "").replace("(crit.01)", "").replace("(crit.02)", "02")+"_"+current_curso.toLowerCase().trim().replace(" ", "_"));
+			"training_set2"+forma_saida.toLowerCase().trim().replace(" ", "").replace("(crit.01)", "").replace("(crit.02)", "02")+"_"+current_curso.toLowerCase().trim().replace(" ", "_"));
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -368,7 +365,7 @@ public class AnaliseDeJubilado {
 		
 		try {
 			vectorCourses = MongoConnection.getInstance().getDB().getCollection(
-			"vector_courses_training_set"+forma_saida.toLowerCase().trim().replace(" ", "").replace("(crit.01)", "").replace("(crit.02)", "02")+"_"+current_curso.toLowerCase().trim().replace(" ", "_"));
+			"vector_courses_training_set2"+forma_saida.toLowerCase().trim().replace(" ", "").replace("(crit.01)", "").replace("(crit.02)", "02")+"_"+current_curso.toLowerCase().trim().replace(" ", "_"));
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -400,7 +397,7 @@ public class AnaliseDeJubilado {
 
 		try {
 			vectorCourses = MongoConnection.getInstance().getDB().getCollection(
-			"vector_courses_training_set"+forma_saida.toLowerCase().trim().replace(" ", "").replace("(crit.01)", "").replace("(crit.02)", "02")+"_"+current_curso.toLowerCase().trim().replace(" ", "_"));
+			"vector_courses_training_set2"+forma_saida.toLowerCase().trim().replace(" ", "").replace("(crit.01)", "").replace("(crit.02)", "02")+"_"+current_curso.toLowerCase().trim().replace(" ", "_"));
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -564,7 +561,7 @@ public class AnaliseDeJubilado {
 		
 		try {
 			vectorCourses = MongoConnection.getInstance().getDB().getCollection(
-			"vector_courses_geral"+forma_saida.toLowerCase().trim().replace(" ", "").replace("(crit.01)", "").replace("(crit.02)", "02")+"_"+current_curso.toLowerCase().trim().replace(" ", "_"));
+			"vector_courses_geral2"+forma_saida.toLowerCase().trim().replace(" ", "").replace("(crit.01)", "").replace("(crit.02)", "02")+"_"+current_curso.toLowerCase().trim().replace(" ", "_"));
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -597,7 +594,7 @@ public class AnaliseDeJubilado {
 
 		try {
 			vectorCourses = MongoConnection.getInstance().getDB().getCollection(
-			"vector_courses_geral"+forma_saida.toLowerCase().trim().replace(" ", "").replace("(crit.01)", "").replace("(crit.02)", "02")+"_"+current_curso.toLowerCase().trim().replace(" ", "_"));
+			"vector_courses_geral2"+forma_saida.toLowerCase().trim().replace(" ", "").replace("(crit.01)", "").replace("(crit.02)", "02")+"_"+current_curso.toLowerCase().trim().replace(" ", "_"));
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -755,11 +752,15 @@ public class AnaliseDeJubilado {
 			}
 		
 		Collections.sort(listAllDistance);
-		System.out.println("lista de distancias");
-		System.out.println(listAllDistance);
-		System.out.println("posicao");
-		System.out.println(listAllDistance.size());
+//		System.out.println("lista de distancias");
+//		System.out.println(listAllDistance);
+		
 		medianaDistancia = listAllDistance.get(listAllDistance.size()/2);
+		
+		System.out.println(" ");
+		System.out.println("distancia mediana ");
+		System.out.println(medianaDistancia);
+		
 		return medianaDistancia;
 	}
 	
@@ -841,7 +842,7 @@ public class AnaliseDeJubilado {
 		AnaliseDeJubilado ativ= new AnaliseDeJubilado("ciencia da computacao");
 		
 		// FORMA O CONJUNTO DE ALUNOS QUE ESTARÃO NO CONJUNTO DO PERFIL SELECIONADO DE ACORDO COM A PORCENTAGEM REQUERIDA
-		ativ.filterByJubilado("jubilado (crit. 01)", 0.5);
+		ativ.filterByJubilado("jubilado (crit. 02)", 0.75);
 		
 		// CALCULA A MEDIA DE NOTAS DOS ALUNOS DO CONJUNTO EM CADA DISCIPLINA DO VETOR DE DISCPLINAS QUE FORAM 
 		// SELECIONADAS DENTRO DO CONJUNTO DE DISCIPLINAS FEITAS PELOS ALUNOS DENTRO DO CONJUNTO
@@ -849,7 +850,7 @@ public class AnaliseDeJubilado {
 		
 		// ENCONTRA O REPRESENTANTE DO CONJUNTO FORMADO DENTRO DAQUELE TIPO DE EVASAO REQUERIDO, ATRAVÉS
 		// DE UM CALCULO DE MÉDIA DAS DISTÂNCIAS DE CADA ALUNO DENTRO DO CONJUNTO PARA O RESTANTE DOS ALUNOS DO CONJUNTO
-		String representante = ativ.getRepresentante("jubilado (crit. 01)");
+		String representante = ativ.getRepresentante("jubilado (crit. 02)");
 		
 		// CALCULA A MEDIA DE NOTAS DOS ALUNOS ("RESTO DO MUNDO") EM CADA DISCIPLINA DO VETOR DE DISCPLINAS QUE FORAM 
 		// SELECIONADAS DENTRO DO CONJUNTO DE DISCIPLINAS FEITAS PELOS ALUNOS DENTRO DO CONJUNTO
@@ -857,15 +858,15 @@ public class AnaliseDeJubilado {
 		
 		// CALCULA A DISTANCIA MAXIMA DENTRO DO CONJUNTO, ATRAVÉS DE UM CALCULO PARA DESCOBRIR QUAL O VALOR DA DISTANCIA
 		// DO ALUNO MAIS DISTANTE DO REPRESENTANTE DE DENTRO DO CONJUNTO
-		double distMax = ativ.getDistanciaMax("jubilado (crit. 01)", representante);
+		double distMax = ativ.getDistanciaMax("jubilado (crit. 02)", representante);
 		
 		// VERIFICA QUANTIDADE DE ALUNOS DE DENTRO DO PERFIL PORÉM QUE NÃO ENTRARAM NO CONJUNTO E QUE FORAM CLASSIFICADOS
 		// PELO ALGORITMO COMO PERTENCENTES AO PERFIL 
-		ativ.getResultadosExperimentosDistanceDoPerfil("jubilado (crit. 01)", representante, distMax);
+		ativ.getResultadosExperimentosDistanceDoPerfil("jubilado (crit. 02)", representante, distMax);
 		
 		// VERIFICA QUANTIDADE DE ALUNOS FORA DO PERFIL (RESTO DO MUNDO) QUE FORAM CLASSIFICADOS
 		// PELO ALGORITMO COMO PERTENCENTES AO PERFIL
-		ativ.getResultadosExperimentosDistanceGeral("jubilado (crit. 01)", representante, distMax);
+		ativ.getResultadosExperimentosDistanceGeral("jubilado (crit. 02)", representante, distMax);
 		
 //		System.out.println(ativ.getResponse("jubilado (crit. 01)"));
 //		System.out.println();

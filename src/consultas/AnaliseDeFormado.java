@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -777,6 +778,52 @@ public class AnaliseDeFormado {
 		return menorDistancia;
 	}
 	
+	public double getDistanciaMediana(String forma_saida, String id_representante) {
+		List<List<String>> listDistance = new ArrayList<List<String>>();
+		List<String> listAlunos = getAlunos(forma_saida);
+		List<Double> listAllDistance = new ArrayList<Double>();
+
+			
+			double medianaDistancia;
+			
+			for (int i = 0; i < listAlunos.size(); i++) {
+					List<String> listInfo = new ArrayList<String>();
+					List<Double> vectorCoursesAlunoRepresentante = getVectorCourses(forma_saida, id_representante);
+					List<Double> vectorCoursesAluno = getVectorCourses(forma_saida, listAlunos.get(i));
+					
+					double media = 0.0;
+					for (int k = 0; k < vectorCoursesAlunoRepresentante.size(); k++) {
+						double notaA = vectorCoursesAlunoRepresentante.get(k);
+						double notaB = vectorCoursesAluno.get(k);
+						double nota_final = 1 - ((Math.abs(notaA - notaB))/10);
+						media = media + nota_final;
+					}
+					media = media/vectorCoursesAlunoRepresentante.size();
+					listAllDistance.add(media);
+					listInfo.add(listAlunos.get(i).toString());
+					listInfo.add(String.valueOf(media));
+						
+					listDistance.add(listInfo);
+						
+//						if (media < menorDistancia) {
+//							menorDistancia = media;
+//							id_aluno_menor_distancia = listAlunos.get(i).toString();
+//						}
+			}
+		
+		Collections.sort(listAllDistance);
+		System.out.println("lista de distancias");
+		System.out.println(listAllDistance);
+		
+		medianaDistancia = listAllDistance.get(listAllDistance.size()/2);
+		
+		System.out.println(" ");
+		System.out.println("distancia mediana ");
+		System.out.println(medianaDistancia);
+		
+		return medianaDistancia;
+	}
+	
 	public List<List<String>> getResultadosExperimentosDistanceDoPerfil(String forma_saida, String id_representante, double distMax) {
 		List<List<String>> listDistancesAprovados = new ArrayList<List<String>>();
 		List<List<String>> listDistancesReprovados = new ArrayList<List<String>>();
@@ -868,11 +915,11 @@ public class AnaliseDeFormado {
 		
 		// CALCULA A MEDIA DE NOTAS DOS ALUNOS DO CONJUNTO EM CADA DISCIPLINA DO VETOR DE DISCPLINAS QUE FORAM 
 		// SELECIONADAS DENTRO DO CONJUNTO DE DISCIPLINAS FEITAS PELOS ALUNOS DENTRO DO CONJUNTO
-//		ativ.getAverageDisciplines("formado");
+		ativ.getAverageDisciplines("formado");
 		
 		// ENCONTRA O REPRESENTANTE DO CONJUNTO FORMADO DENTRO DAQUELE TIPO DE EVASAO REQUERIDO, ATRAVÉS
 		// DE UM CALCULO DE MÉDIA DAS DISTÂNCIAS DE CADA ALUNO DENTRO DO CONJUNTO PARA O RESTANTE DOS ALUNOS DO CONJUNTO
-		String representante = ativ.getRepresentante("formado");
+//		String representante = ativ.getRepresentante("formado");
 		
 		// CALCULA A MEDIA DE NOTAS DOS ALUNOS ("RESTO DO MUNDO") EM CADA DISCIPLINA DO VETOR DE DISCPLINAS QUE FORAM 
 		// SELECIONADAS DENTRO DO CONJUNTO DE DISCIPLINAS FEITAS PELOS ALUNOS DENTRO DO CONJUNTO
@@ -880,15 +927,16 @@ public class AnaliseDeFormado {
 		
 		// CALCULA A DISTANCIA MAXIMA DENTRO DO CONJUNTO, ATRAVÉS DE UM CALCULO PARA DESCOBRIR QUAL O VALOR DA DISTANCIA
 		// DO ALUNO MAIS DISTANTE DO REPRESENTANTE DE DENTRO DO CONJUNTO
-		double distMax = ativ.getDistanciaMax("formado", representante);
+//		double distMax = ativ.getDistanciaMax("formado", representante);
+//		double distMax = ativ.getDistanciaMediana("formado", representante);
 		
 		// VERIFICA QUANTIDADE DE ALUNOS DE DENTRO DO PERFIL PORÉM QUE NÃO ENTRARAM NO CONJUNTO E QUE FORAM CLASSIFICADOS
 		// PELO ALGORITMO COMO PERTENCENTES AO PERFIL 
-		ativ.getResultadosExperimentosDistanceDoPerfil("formado", representante, distMax);
+//		ativ.getResultadosExperimentosDistanceDoPerfil("formado", representante, distMax);
 		
 		// VERIFICA QUANTIDADE DE ALUNOS FORA DO PERFIL (RESTO DO MUNDO) QUE FORAM CLASSIFICADOS
 		// PELO ALGORITMO COMO PERTENCENTES AO PERFIL
-		ativ.getResultadosExperimentosDistanceGeral("formado", representante, distMax);
+//		ativ.getResultadosExperimentosDistanceGeral("formado", representante, distMax);
 				
 //		System.out.println(ativ.getResponse("jubilado (crit. 01)"));
 //		System.out.println();

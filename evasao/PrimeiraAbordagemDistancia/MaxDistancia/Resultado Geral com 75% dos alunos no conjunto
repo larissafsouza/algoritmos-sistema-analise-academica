@@ -17,13 +17,9 @@
 1) total de alunos no mundo (sem todos os alunos do perfil selecionado) = 728
 2) total de alunos no mundo (com os excluidos do conjunto) = 733
 
-* Tamanho da lista dos alunos excluídos do conjunto e classificados como pertences ao perfil: 4 (80%)
-* Tamanho da lista dos alunos excluídos do conjunto e classificados como não pertences ao perfil: 1 (20%)
+* Tamanho da lista dos alunos excluídos do conjunto e classificados como pertences ao perfil: 5 (100%)
+* Tamanho da lista dos alunos excluídos do conjunto e classificados como não pertences ao perfil: 0
 
-* Tamanho da lista dos alunos em geral classificados como pertences ao perfil: 469
-1) 465 = 64%
-2) 469 = 64% 
+* Tamanho da lista dos alunos em geral classificados como pertences ao perfil: 733 (100%)
 
-* Tamanho da lista dos alunos em geral classificados como não pertences ao perfil: 264
-1) 263 = 36%
-2) 264 = 36%
+* Tamanho da lista dos alunos em geral classificados como não pertences ao perfil: 0
