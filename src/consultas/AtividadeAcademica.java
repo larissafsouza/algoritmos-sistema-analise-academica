@@ -296,6 +296,7 @@ public class AtividadeAcademica {
 			
 			
 			DBObject group = new BasicDBObject("$group", groupFields);
+			
 			DBObject id2 = new BasicDBObject();
 			id2.put("ano_saida", "$_id.ano_saida");
 			

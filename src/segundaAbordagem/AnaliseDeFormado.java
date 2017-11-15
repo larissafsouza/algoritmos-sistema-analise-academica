@@ -1070,7 +1070,7 @@ public class AnaliseDeFormado {
 		AnaliseDeFormado ativ= new AnaliseDeFormado("ciencia da computacao");
 		
 		// FORMA O CONJUNTO DE ALUNOS QUE ESTARÃO NO CONJUNTO DO PERFIL SELECIONADO DE ACORDO COM A PORCENTAGEM REQUERIDA
-//		ativ.filterByFormado("formado", 0.5);
+		ativ.filterByFormado("formado", 0.5);
 		
 //		System.out.println(ativ.getAlunos("formado").size());
 //		System.out.println(ativ.getDisciplinesDistintics("formado").size());
@@ -1082,9 +1082,9 @@ public class AnaliseDeFormado {
 		// ENCONTRA O REPRESENTANTE DO CONJUNTO FORMADO DENTRO DAQUELE TIPO DE EVASAO REQUERIDO, ATRAVÉS
 		// DE UM CALCULO DE MÉDIA DAS DISTÂNCIAS DE CADA ALUNO DENTRO DO CONJUNTO PARA O RESTANTE DOS ALUNOS DO CONJUNTO
 //		String representante = ativ.getRepresentante("formado");
-		List<String> alunos = ativ.getAlunos("formado");
+//		List<String> alunos = ativ.getAlunos("formado");
 		
-		System.out.println(alunos);
+//		System.out.println(alunos);
 		
 		// CALCULA A MEDIA DE NOTAS DOS ALUNOS ("RESTO DO MUNDO") EM CADA DISCIPLINA DO VETOR DE DISCPLINAS QUE FORAM 
 		// SELECIONADAS DENTRO DO CONJUNTO DE DISCIPLINAS FEITAS PELOS ALUNOS DENTRO DO CONJUNTO
