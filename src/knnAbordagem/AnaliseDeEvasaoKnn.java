@@ -20,13 +20,13 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import dao.mongo.MongoConnection;
 
-public class AnaliseDeFormadoKnn {
+public class AnaliseDeEvasaoKnn {
 	private DBCollection alunos;
 	private String current_curso;
 	private String id_aluno_representante;
 	private List<String> list_excluidos_perfil;
 	
-	public AnaliseDeFormadoKnn(String curso){
+	public AnaliseDeEvasaoKnn(String curso){
 		current_curso = curso;
 			alunos = null;
 				try {
@@ -37,47 +37,78 @@ public class AnaliseDeFormadoKnn {
 				}
 	}
 	
-	public List<String> filterByFormado(String forma_saida, double porcentagemConjunto){
-		DBObject match = new BasicDBObject("$match", new BasicDBObject("forma_saida", forma_saida));
+	public List<String> filterByEvasao(String forma_saida, double porcentagemConjunto){
+		DBObject match = new BasicDBObject("$match", new BasicDBObject("forma_saida",new BasicDBObject("$ne", "formado")));
+		DBObject match2 = new BasicDBObject("$match", new BasicDBObject("forma_saida",new BasicDBObject("$ne", "jubilado (crit. 02)")));
+		DBObject match3 = new BasicDBObject("$match", new BasicDBObject("forma_saida",new BasicDBObject("$ne", "jubilado (crit. 01)")));
+		DBObject match4 = new BasicDBObject("$match", new BasicDBObject("forma_saida",new BasicDBObject("$ne", "desistente")));
+		DBObject match5 = new BasicDBObject("$match", new BasicDBObject("forma_saida",new BasicDBObject("$ne", "transferido")));
+		DBObject match6 = new BasicDBObject("$match", new BasicDBObject("forma_saida",new BasicDBObject("$ne", "excluido")));
 
 		DBObject id = new BasicDBObject();
 		id.put("curso","$cod_curso");
 		id.put("id_aluno", "$id_aluno");
-		id.put("ano_ingresso", "$ano_ingresso");
-		id.put("ano_saida", "$ano_saida");
+		id.put("ano", "$ano");
+		id.put("periodo", "$periodo");
 		
 		DBObject groupFields = new BasicDBObject();
 		groupFields.put("_id", id);
 		groupFields.put("quantidade", new BasicDBObject("$sum", 1));
 		DBObject group = new BasicDBObject("$group", groupFields);
+		
+		DBObject sortFields = new BasicDBObject();
+		sortFields.put("_id", 1);
+		DBObject sort = new BasicDBObject("$sort", sortFields);
 					
-		List<DBObject> pipeline = Arrays.asList(match, group);
+		List<DBObject> pipeline = Arrays.asList(match, match2, match3, match4, match5, match6, group, sort);
 		AggregationOutput output = alunos.aggregate(pipeline);
 								
-		List<String> listaFormandosGeral = new ArrayList<String>();
-		List<String> listaPreFormandosGeral = new ArrayList<String>();
+		List<String> listaEvasaoGeral = new ArrayList<String>();
 		List<String> listaAlunosConjunto = new ArrayList<String>();
 		List<String> listaAlunosForaConjunto = new ArrayList<String>();
-		
-
+					
+		Map<String, List<String>> listaAtividadesAlunos = new LinkedHashMap<String, List<String>>();
 		
 		for (DBObject dbo : output.results()) {
 //			System.out.println("dbo: " + dbo);
 			DBObject getId = (DBObject) dbo.get("_id");
 			String id_aluno = getId.get("id_aluno").toString();
-			int anos = Integer.parseInt(getId.get("ano_saida").toString()) - Integer.parseInt(getId.get("ano_ingresso").toString());
-//			System.out.println("anos: " + anos);
-			if (anos <= 3) {
-				listaPreFormandosGeral.add(id_aluno);
+			String ano = getId.get("ano").toString();
+			String periodo = getId.get("periodo").toString();
+			
+			List<String> listaPeriodos = new ArrayList<String>();
+			
+			if (listaAtividadesAlunos.containsKey(id_aluno)) {
+				listaPeriodos = listaAtividadesAlunos.get(id_aluno);
+				listaPeriodos.add(ano+"/"+periodo);
+				listaAtividadesAlunos.put(id_aluno, listaPeriodos);
+			} else {
+				listaPeriodos.add(ano+"/"+periodo);
+				listaAtividadesAlunos.put(id_aluno, listaPeriodos);
 			}
 		}
 		
-		for (int l = 0; l < listaPreFormandosGeral.size(); l++) {
-			if (verificarPeriodos(listaPreFormandosGeral.get(l))){
-				listaFormandosGeral.add(listaPreFormandosGeral.get(l));
-			}
+		Set<String> setIdAlunos = listaAtividadesAlunos.keySet();
+		Iterator<String> iterator = setIdAlunos.iterator();
+					
+		while (iterator.hasNext()) {
+		    String id_aluno = iterator.next();
+		    List<String> periodos = listaAtividadesAlunos.get(id_aluno);
+		    String [] itemAtual = periodos.get(listaAtividadesAlunos.get(id_aluno).size()-1).split("/");
+		    int ano = 0;
+		    String periodo = "";
+		    if (itemAtual[1].equals("1A") || itemAtual[1].equals("1F")) {
+		    	ano = Integer.parseInt(itemAtual[0]) + 2;
+		    	periodo = "2A";
+		    } else if (itemAtual[1].equals("2A") || itemAtual[1].equals("2F")) {
+		    	ano = Integer.parseInt(itemAtual[0]) + 3;
+		    	periodo = "1A";
+		    }
+		    
+		    if (ano <= 2015 && (periodo.equals("1A") || periodo.equals("2A"))) {
+		    	listaEvasaoGeral.add(id_aluno);
+		    }
 		}
-		
 		
 		int count = 1;
 		BasicDBObject document = new BasicDBObject();
@@ -86,19 +117,19 @@ public class AnaliseDeFormadoKnn {
 		// training_set2 com um aumento de alunos do conjunto
 		try {
 			trainingSet = MongoConnection.getInstance().getDB().getCollection(
-			"training_set"+forma_saida.toLowerCase().trim().replace(" ", "").replace("(crit.01)", "").replace("(crit.02)", "02")+"_"+current_curso.toLowerCase().trim().replace(" ", "_"));
+			"training_set"+forma_saida.toLowerCase()+"_"+current_curso.toLowerCase().trim().replace(" ", "_"));
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
 		System.out.println("size");
-		int size = (int)((double)listaFormandosGeral.size() * porcentagemConjunto);
+		int size = (int)((double)listaEvasaoGeral.size() * porcentagemConjunto);
 		System.out.println(size);
 		
-		for (int i = 0; i < listaFormandosGeral.size(); i++) {
-			String id_aluno = listaFormandosGeral.get(i);
-						
+		for (int i = 0; i < listaEvasaoGeral.size(); i++) {
+			String id_aluno = listaEvasaoGeral.get(i);
+			
 			if (count <= size) {
 				listaAlunosConjunto.add(id_aluno);
 				
@@ -141,9 +172,7 @@ public class AnaliseDeFormadoKnn {
 					
 					document.put("forma_ingresso", activity.get(12));
 					document.put("ano_ingresso", Integer.parseInt(activity.get(13)));
-					document.put("forma_saida", activity.get(14));
-					document.put("ano_saida", Integer.parseInt(activity.get(15)));
-
+					
 //					trainingSet.save(document);	
 				}
 			} else {
@@ -158,9 +187,8 @@ public class AnaliseDeFormadoKnn {
 //		System.out.println(listaAlunosForaConjunto);
 //		System.out.println("LISTA DE ALUNOS DO CONJUNTO");
 //		System.out.println(listaAlunosConjunto);
-		
+//		
 		return listaAlunosConjunto;
-
 	}
 	
 	public boolean verificarPeriodos(String id_aluno) {
@@ -224,8 +252,6 @@ public class AnaliseDeFormadoKnn {
 		id.put("carga_horaria_pratica", "$carga_horaria_pratica");
 		id.put("forma_ingresso", "$forma_ingresso");
 		id.put("ano_ingresso", "$ano_ingresso");
-		id.put("forma_saida", "$forma_saida");
-		id.put("ano_saida", "$ano_saida");
 		
 		DBObject groupFields = new BasicDBObject();
 		groupFields.put("_id", id);
@@ -267,8 +293,6 @@ public class AnaliseDeFormadoKnn {
 			
 			String forma_ingresso = getId.get("forma_ingresso").toString();
 			String ano_ingresso = getId.get("ano_ingresso").toString();
-			String forma_saida = getId.get("forma_saida").toString();
-			String ano_saida = getId.get("ano_saida").toString();
 			
 			List<String> listInside = new ArrayList<String>();
 
@@ -286,8 +310,6 @@ public class AnaliseDeFormadoKnn {
 			listInside.add(carga_horaria_pratica);
 			listInside.add(forma_ingresso);
 			listInside.add(ano_ingresso);
-			listInside.add(forma_saida);
-			listInside.add(ano_saida);
 			
 			list.add(listInside);
 			
@@ -408,7 +430,7 @@ public class AnaliseDeFormadoKnn {
 		
 		List<String> listDisc = new ArrayList<String>();
 		
-		int size = (int)((double)getAlunos(forma_saida).size() * 1);
+		int size = (int)((double)getAlunos(forma_saida).size() * 0.5);
 
 		
 		for (DBObject dbo : output.results()) {
@@ -461,7 +483,7 @@ public class AnaliseDeFormadoKnn {
 										
 		List<String> listDisc = new ArrayList<String>();
 
-		int size = (int)((double)getAlunos(forma_saida).size() * 1);
+		int size = (int)((double)getAlunos(forma_saida).size() * 0.5);
 		
 		for (DBObject dbo : output.results()) {
 //			System.out.println("dbo: " +dbo);
@@ -527,7 +549,7 @@ public class AnaliseDeFormadoKnn {
 										
 		List<String> listDisc = new ArrayList<String>();
 		
-		int size = (int)((double)(k+1) * 1);
+		int size = (int)((double)(k+1) * 0.5);
 //		System.out.println("size: " + size);
 		
 		for (DBObject dbo : output.results()) {
@@ -913,8 +935,10 @@ public class AnaliseDeFormadoKnn {
 		
 		if (abordagem_disciplinas.equals("flex")) {
 			listDisciplinas = getDisciplinesDistintics(forma_saida);
+//			System.out.println("qnt flex: " + listDisciplinas.size());
 		} else {
 			listDisciplinas = getDisciplinesRestrito (forma_saida);
+//			System.out.println("qnt restrito: " + listDisciplinas.size());
 		}
 		List<List<String>> listMedias = new ArrayList<List<String>>();
 
@@ -1003,7 +1027,6 @@ public class AnaliseDeFormadoKnn {
 	public double getLimiarJaccardGeral(String forma_saida, String id_aluno, String abordagem_disciplinas, int knn) {
 //		List<String> reguaGroup = getDisciplinesDistintics(forma_saida);
 //		List<String> reguaGroup = getDisciplinesRestrito(forma_saida);
-//		List<String> reguaRepresentante = getAlunoReguaGroup(forma_saida, id_representante);
 		List<String> reguaRepresentante = getDisciplinesDistinticsToGroupKnn(forma_saida, abordagem_disciplinas, knn);
 		List<String> alunoReguaGroup = getAlunoReguaGroup(forma_saida, id_aluno);
 		
@@ -1110,9 +1133,6 @@ public class AnaliseDeFormadoKnn {
 					
 					document.put("forma_ingresso", activity.get(12));
 					document.put("ano_ingresso", Integer.parseInt(activity.get(13)));
-					document.put("forma_saida", activity.get(14));
-					document.put("ano_saida", Integer.parseInt(activity.get(15)));
-
 //					knn_info_group.save(document);	
 				}
 		}
@@ -1135,6 +1155,9 @@ public class AnaliseDeFormadoKnn {
 		
 		BasicDBObject document = new BasicDBObject();
 		DBCollection knn_distances_geral = null;
+		
+//		System.out.println("alunosss");
+//		System.out.println(listAlunos.size());
 		
 		try {
 			knn_distances_geral = MongoConnection.getInstance().getDB().getCollection(
@@ -1329,7 +1352,7 @@ public class AnaliseDeFormadoKnn {
 		List<String> listAlunos = getAlunosFromGroupKnn(forma_saida, abordagem_disciplinas, knn);
 		List<Double> listAllDistance = new ArrayList<Double>();
 		
-		System.out.println("list aluunos: " + listAlunos.size());
+//		System.out.println("list aluunos: " + listAlunos.size());
 
 			double medianaDistancia;
 			
@@ -1480,7 +1503,6 @@ public class AnaliseDeFormadoKnn {
 			
 			
 			if (valueJaccard >= limiarJaccard) {
-//				System.out.println("entrou");
 				cont++;
 //				System.out.println("entrou");
 				vectorCoursesAlunoRepresentante = getDisciplinesFromGroupKnn(forma_saida, id_representante, abordagem_disciplinas, knn);
@@ -1515,7 +1537,6 @@ public class AnaliseDeFormadoKnn {
 				
 				similaridade = similaridade/vectorCoursesAlunoRepresentante.size();
 			}
-//				System.out.println("n entrou");
 				double distance = 1 - similaridade;
 				listInfo.add(listAlunos.get(i).toString());
 				listInfo.add(String.valueOf(distance));
@@ -1527,7 +1548,6 @@ public class AnaliseDeFormadoKnn {
 				} else {
 					listDistancesReprovados.add(listInfo);
 				}
-			
 	}
 		System.out.println("tamanho da lista dos alunos em geral classificados como pertences ao perfil");
 		System.out.println(listDistancesAprovados.size());
@@ -1543,15 +1563,15 @@ public class AnaliseDeFormadoKnn {
 	}
 	
 	public static void main(String args[]) {
-		AnaliseDeFormadoKnn ativ= new AnaliseDeFormadoKnn("ciencia da computacao");
+		AnaliseDeEvasaoKnn ativ= new AnaliseDeEvasaoKnn("ciencia da computacao");
 		
 		System.out.println("KNN");
 		
 		// FORMA O CONJUNTO DE ALUNOS QUE ESTARÃO NO CONJUNTO DO PERFIL SELECIONADO DE ACORDO COM A PORCENTAGEM REQUERIDA
-//		ativ.filterByFormado("formado", 1);
+		ativ.filterByEvasao("evasao", 1);
 		
-//		System.out.println(ativ.getDisciplinesDistintics("formado").size());
-//		System.out.println(ativ.getAlunos("formado").size());
+//		System.out.println(ativ.getDisciplinesDistintics("evasao").size());
+//		System.out.println(ativ.getAlunos("evasao").size());
 		
 //		ativ.setDisciplinesRestrito("formado");
 		
@@ -1559,23 +1579,21 @@ public class AnaliseDeFormadoKnn {
 						
 		// ENCONTRA O REPRESENTANTE DO CONJUNTO FORMADO DENTRO DAQUELE TIPO DE EVASAO REQUERIDO, ATRAVÉS
 		// DE UM CALCULO DE MÉDIA DAS DISTÂNCIAS DE CADA ALUNO DENTRO DO CONJUNTO PARA O RESTANTE DOS ALUNOS DO CONJUNTO
-//		String representanteReal = ativ.getRepresentante("formado", "restrito");
+//		String representanteReal = ativ.getRepresentante("evasao", "restrito");
 		
-//		ativ.calculateDistanceGroupToRepresentante("formado", representanteReal, "restrito");
+//		ativ.calculateDistanceGroupToRepresentante("evasao", representanteReal, "restrito");
 		
-//		System.out.println(ativ.setInfoKnn("formado", "restrito", 5));
+//		System.out.println(ativ.setInfoKnn("evasao", "restrito", 5));
 		
-//		System.out.println(ativ.getAlunosFromGroupKnn("formado", "restrito", 5));
+//		System.out.println(ativ.getDisciplinesDistinticsToGroupKnn("evasao", "restrito", 5).size());
 		
-//		System.out.println(ativ.getDisciplinesDistinticsToGroupKnn("formado", "flex", 5));
+//		ativ.setRepresentanteArtificial("evasao", "restrito", 5);
 		
-//		ativ.setRepresentanteArtificial("formado", "restrito", 5);
-		
-		double limiarJaccard = ativ.getLimiarJaccardGroup("formado", "restrito", 5);
+		double limiarJaccard = ativ.getLimiarJaccardGroup("evasao", "restrito", 5);
 		
 		// CALCULA A DISTANCIA MAXIMA DENTRO DO CONJUNTO, ATRAVÉS DE UM CALCULO PARA DESCOBRIR QUAL O VALOR DA DISTANCIA
 		// DO ALUNO MAIS DISTANTE DO REPRESENTANTE DE DENTRO DO CONJUNTO
-		double distMax = ativ.getDistanciaMediana("formado", "representante"+5,"restrito", 5);
+		double distMax = ativ.getDistanciaMediana("evasao", "representante"+5,"restrito", 5);
 		
 //		System.out.println(" ");
 		
@@ -1585,7 +1603,7 @@ public class AnaliseDeFormadoKnn {
 		
 		// VERIFICA QUANTIDADE DE ALUNOS FORA DO PERFIL (RESTO DO MUNDO) QUE FORAM CLASSIFICADOS
 		// PELO ALGORITMO COMO PERTENCENTES AO PERFIL
-		ativ.getResultadosExperimentosDistanceGeral("formado", "representante"+5, distMax, limiarJaccard, "restrito", 5);
+		ativ.getResultadosExperimentosDistanceGeral("evasao", "representante"+5, distMax, limiarJaccard, "restrito", 5);
 	}
 }
 

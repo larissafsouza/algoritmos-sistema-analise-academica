@@ -724,8 +724,8 @@ public class AnaliseDeFormadoJaccard {
 	}
 	
 	public List<List<String>> getDisciplines(String forma_saida, String id_aluno) {
-//		List<String> listDisciplinas = getDisciplinesDistintics(forma_saida);
-		List<String> listDisciplinas = getDisciplinesRestrito (forma_saida);
+		List<String> listDisciplinas = getDisciplinesDistintics(forma_saida);
+//		List<String> listDisciplinas = getDisciplinesRestrito (forma_saida);
 //		System.out.println("get disciplinas: " + listDisciplinas.size());
 		List<List<String>> listMedias = new ArrayList<List<String>>();
 
@@ -736,8 +736,8 @@ public class AnaliseDeFormadoJaccard {
 	}
 	
 	public List<List<String>> getDisciplinesGeral(String forma_saida, String id_aluno) {
-//		List<String> listDisciplinas = getDisciplinesDistintics(forma_saida);
-		List<String> listDisciplinas = getDisciplinesRestrito (forma_saida);
+		List<String> listDisciplinas = getDisciplinesDistintics(forma_saida);
+//		List<String> listDisciplinas = getDisciplinesRestrito (forma_saida);
 		List<List<String>> listMedias = new ArrayList<List<String>>();
 
 		for (int j = 0; j < listDisciplinas.size(); j++) {
@@ -751,7 +751,7 @@ public class AnaliseDeFormadoJaccard {
 		DBObject matchAluno = new BasicDBObject("$match", new BasicDBObject("id_aluno", id_aluno));
 
 		DBObject id = new BasicDBObject();
-		id.put("cod_ativ_curricular", "$cod_ativ_curricular");
+		id.put("nome_ativ_curricular", "$nome_ativ_curricular");
 		
 		DBObject groupFields = new BasicDBObject();
 		groupFields.put("_id", id);
@@ -766,7 +766,7 @@ public class AnaliseDeFormadoJaccard {
 		for (DBObject dbo : output.results()) {
 //			System.out.println("dbo: " +dbo);
 			DBObject getId = (DBObject) dbo.get("_id");
-			String cod_ativ_curricular = getId.get("cod_ativ_curricular").toString();
+			String cod_ativ_curricular = getId.get("nome_ativ_curricular").toString();
 			discipline.add(cod_ativ_curricular);
 		}
 		
