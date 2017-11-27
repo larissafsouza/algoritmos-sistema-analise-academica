@@ -1321,6 +1321,8 @@ public class AnaliseDeEvasaoKnn {
 	}
 	
 	public List<String> getAlunosGeral(String forma_saida){
+		DBObject match = new BasicDBObject("$match", new BasicDBObject("forma_saida",new BasicDBObject("$ne", "formado")));
+
 		DBObject id = new BasicDBObject();
 		id.put("id_aluno", "$id_aluno");
 		
@@ -1552,9 +1554,13 @@ public class AnaliseDeEvasaoKnn {
 		System.out.println("tamanho da lista dos alunos em geral classificados como pertences ao perfil");
 		System.out.println(listDistancesAprovados.size());
 		System.out.println(" ");
+		System.out.println("lista com info");
+		System.out.println(listDistancesAprovados);
 		System.out.println("tamanho da lista dos alunos em geral classificados como não pertences ao perfil");
 		System.out.println(listDistancesReprovados.size());
 		System.out.println(" ");
+		System.out.println("outra lista com info");
+		System.out.println(listDistancesReprovados);
 		System.out.println("lista geral");
 		System.out.println(listaDistanciasGeral);
 		System.out.println(" ");
@@ -1565,7 +1571,7 @@ public class AnaliseDeEvasaoKnn {
 	public static void main(String args[]) {
 		AnaliseDeEvasaoKnn ativ= new AnaliseDeEvasaoKnn("ciencia da computacao");
 		
-		System.out.println("KNN");
+		System.out.println("KNN evasao");
 		
 		// FORMA O CONJUNTO DE ALUNOS QUE ESTARÃO NO CONJUNTO DO PERFIL SELECIONADO DE ACORDO COM A PORCENTAGEM REQUERIDA
 		ativ.filterByEvasao("evasao", 1);
@@ -1579,7 +1585,7 @@ public class AnaliseDeEvasaoKnn {
 						
 		// ENCONTRA O REPRESENTANTE DO CONJUNTO FORMADO DENTRO DAQUELE TIPO DE EVASAO REQUERIDO, ATRAVÉS
 		// DE UM CALCULO DE MÉDIA DAS DISTÂNCIAS DE CADA ALUNO DENTRO DO CONJUNTO PARA O RESTANTE DOS ALUNOS DO CONJUNTO
-//		String representanteReal = ativ.getRepresentante("evasao", "restrito");
+		String representanteReal = ativ.getRepresentante("evasao", "flex");
 		
 //		ativ.calculateDistanceGroupToRepresentante("evasao", representanteReal, "restrito");
 		
@@ -1589,11 +1595,11 @@ public class AnaliseDeEvasaoKnn {
 		
 //		ativ.setRepresentanteArtificial("evasao", "restrito", 5);
 		
-		double limiarJaccard = ativ.getLimiarJaccardGroup("evasao", "restrito", 5);
+		double limiarJaccard = ativ.getLimiarJaccardGroup("evasao", "flex", 5);
 		
 		// CALCULA A DISTANCIA MAXIMA DENTRO DO CONJUNTO, ATRAVÉS DE UM CALCULO PARA DESCOBRIR QUAL O VALOR DA DISTANCIA
 		// DO ALUNO MAIS DISTANTE DO REPRESENTANTE DE DENTRO DO CONJUNTO
-		double distMax = ativ.getDistanciaMediana("evasao", "representante"+5,"restrito", 5);
+		double distMax = ativ.getDistanciaMediana("evasao", "representante"+5,"flex", 5);
 		
 //		System.out.println(" ");
 		
@@ -1603,7 +1609,13 @@ public class AnaliseDeEvasaoKnn {
 		
 		// VERIFICA QUANTIDADE DE ALUNOS FORA DO PERFIL (RESTO DO MUNDO) QUE FORAM CLASSIFICADOS
 		// PELO ALGORITMO COMO PERTENCENTES AO PERFIL
-		ativ.getResultadosExperimentosDistanceGeral("evasao", "representante"+5, distMax, limiarJaccard, "restrito", 5);
+		ativ.getResultadosExperimentosDistanceGeral("evasao", "representante"+5, distMax, limiarJaccard, "flex", 5);
+		
+		System.out.println("primeiro vetor de disciplinas");
+		System.out.println(ativ.getDisciplinesDistintics("evasao"));
+		System.out.println(" ");
+		System.out.println("disciplinas group knn");
+		System.out.println(ativ.getDisciplinesDistinticsToGroupKnn("evasao", "flex", 5));
 	}
 }
 

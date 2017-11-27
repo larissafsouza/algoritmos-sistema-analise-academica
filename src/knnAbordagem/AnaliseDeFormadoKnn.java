@@ -1531,6 +1531,8 @@ public class AnaliseDeFormadoKnn {
 	}
 		System.out.println("tamanho da lista dos alunos em geral classificados como pertences ao perfil");
 		System.out.println(listDistancesAprovados.size());
+		System.out.println("lista com info");
+		System.out.println(listDistancesAprovados);
 		System.out.println(" ");
 		System.out.println("tamanho da lista dos alunos em geral classificados como não pertences ao perfil");
 		System.out.println(listDistancesReprovados.size());
@@ -1559,7 +1561,7 @@ public class AnaliseDeFormadoKnn {
 						
 		// ENCONTRA O REPRESENTANTE DO CONJUNTO FORMADO DENTRO DAQUELE TIPO DE EVASAO REQUERIDO, ATRAVÉS
 		// DE UM CALCULO DE MÉDIA DAS DISTÂNCIAS DE CADA ALUNO DENTRO DO CONJUNTO PARA O RESTANTE DOS ALUNOS DO CONJUNTO
-//		String representanteReal = ativ.getRepresentante("formado", "restrito");
+		String representanteReal = ativ.getRepresentante("formado", "restrito");
 		
 //		ativ.calculateDistanceGroupToRepresentante("formado", representanteReal, "restrito");
 		

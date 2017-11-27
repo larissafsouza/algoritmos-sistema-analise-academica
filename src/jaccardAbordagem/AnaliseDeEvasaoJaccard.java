@@ -1368,5 +1368,8 @@ public class AnaliseDeEvasaoJaccard {
 		// VERIFICA QUANTIDADE DE ALUNOS FORA DO PERFIL (RESTO DO MUNDO) QUE FORAM CLASSIFICADOS
 		// PELO ALGORITMO COMO PERTENCENTES AO PERFIL
 		ativ.getResultadosExperimentosDistanceGeral("evasao", representante, distMax, limiarJaccard);
+		System.out.println(ativ.getDisciplinesRestrito("evasao").size());
+		System.out.println("limmiar de jaccard exemplo");
+		System.out.println(ativ.getLimiarJaccardGeral("evasao", "051215cd8c4c975d6a7030d11159877c", "f84525ce69a13442a3cc024af8f0afd0"));
 	}
 }

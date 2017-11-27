@@ -275,8 +275,43 @@ public class AnaliseDeEvasao {
 		return list;
 	}
 	
+//	public List<String> getDisciplinesDistintics(String forma_saida){
+//		DBObject id = new BasicDBObject();
+//		id.put("cod_ativ_curricular", "$cod_ativ_curricular");
+//		id.put("nome_ativ_curricular", "$nome_ativ_curricular");
+//		
+//		DBObject groupFields = new BasicDBObject();
+//		groupFields.put("_id", id);
+//		groupFields.put("quantidade", new BasicDBObject("$sum", 1));
+//		DBObject group = new BasicDBObject("$group", groupFields);
+//		
+//		DBCollection trainingSet = null;
+//		
+//		try {
+//			trainingSet = MongoConnection.getInstance().getDB().getCollection(
+//			"training_set"+forma_saida.toLowerCase().trim().replace(" ", "").replace("(crit.01)", "").replace("(crit.02)", "02")+"_"+current_curso.toLowerCase().trim().replace(" ", "_"));
+//		} catch (UnknownHostException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//					
+//		List<DBObject> pipeline = Arrays.asList(group);
+//		AggregationOutput output = trainingSet.aggregate(pipeline);
+//								
+//		List<String> list = new ArrayList<String>();
+//		
+//		for (DBObject dbo : output.results()) {
+////			System.out.println("dbo: " +dbo);
+//			DBObject getId = (DBObject) dbo.get("_id");
+//			String cod_ativ_curricular = getId.get("cod_ativ_curricular").toString();
+//			list.add(cod_ativ_curricular);
+//		}
+//		return list;
+//	}
+	
 	public List<String> getDisciplinesDistintics(String forma_saida){
 		DBObject id = new BasicDBObject();
+		id.put("id_aluno", "$id_aluno");
 		id.put("cod_ativ_curricular", "$cod_ativ_curricular");
 		id.put("nome_ativ_curricular", "$nome_ativ_curricular");
 		
@@ -284,6 +319,17 @@ public class AnaliseDeEvasao {
 		groupFields.put("_id", id);
 		groupFields.put("quantidade", new BasicDBObject("$sum", 1));
 		DBObject group = new BasicDBObject("$group", groupFields);
+		
+		DBObject id2 = new BasicDBObject();
+//		id2.put("cod_ativ_curricular", "$_id.cod_ativ_curricular");
+		id2.put("nome_ativ_curricular", "$_id.nome_ativ_curricular");
+
+		
+		DBObject groupFields2 = new BasicDBObject();
+		groupFields2.put("_id", id2);
+		groupFields2.put("quantidade", new BasicDBObject("$sum", 1));
+		
+		DBObject group2 = new BasicDBObject("$group", groupFields2);
 		
 		DBCollection trainingSet = null;
 		
@@ -295,18 +341,31 @@ public class AnaliseDeEvasao {
 			e.printStackTrace();
 		}
 					
-		List<DBObject> pipeline = Arrays.asList(group);
+		List<DBObject> pipeline = Arrays.asList(group, group2);
 		AggregationOutput output = trainingSet.aggregate(pipeline);
-								
-		List<String> list = new ArrayList<String>();
+										
+		List<String> listDisc = new ArrayList<String>();
+		
+		int size = (int)((double)getAlunos(forma_saida).size() * 0.5);
+
 		
 		for (DBObject dbo : output.results()) {
 //			System.out.println("dbo: " +dbo);
 			DBObject getId = (DBObject) dbo.get("_id");
-			String cod_ativ_curricular = getId.get("cod_ativ_curricular").toString();
-			list.add(cod_ativ_curricular);
+
+			int quantidade = Integer.parseInt(dbo.get("quantidade").toString());
+			
+			
+			if (quantidade >= size) {
+				String cod_ativ_curricular = getId.get("nome_ativ_curricular").toString();
+				listDisc.add(cod_ativ_curricular);
+			}
 		}
-		return list;
+		
+//		System.out.println("size");
+//		System.out.println(getAlunos(forma_saida).size());
+		
+		return listDisc;
 	}
 	
 	public List<String> getAlunos(String forma_saida){
@@ -351,7 +410,7 @@ public class AnaliseDeEvasao {
 		return media;
 	}
 	
-	public List<String> getAverage(String forma_saida, String id_aluno, String cod_ativ_curricular) {
+	public List<String> getAverage(String forma_saida, String id_aluno, String nome_ativ_curricular) {
 		DBCollection trainingSet = null;
 		try {
 			trainingSet = MongoConnection.getInstance().getDB().getCollection(
@@ -362,11 +421,11 @@ public class AnaliseDeEvasao {
 		}
 		
 		DBObject matchAluno = new BasicDBObject("$match", new BasicDBObject("id_aluno", id_aluno));
-		DBObject matchDisciplina = new BasicDBObject("$match", new BasicDBObject("cod_ativ_curricular", cod_ativ_curricular));
+		DBObject matchDisciplina = new BasicDBObject("$match", new BasicDBObject("nome_ativ_curricular", nome_ativ_curricular));
 
 		DBObject id = new BasicDBObject();
 		id.put("id_aluno", "$id_aluno");
-		id.put("cod_ativ_curricular", "$cod_ativ_curricular");
+		id.put("nome_ativ_curricular", "$nome_ativ_curricular");
 		id.put("media_final", "$media_final");
 		id.put("ano", "$ano");
 		id.put("periodo", "$periodo");
@@ -408,13 +467,13 @@ public class AnaliseDeEvasao {
 		return discipline;
 	}
 	
-	public List<String> getAverageGeral(String forma_saida, String id_aluno, String cod_ativ_curricular) {
+	public List<String> getAverageGeral(String forma_saida, String id_aluno, String nome_ativ_curricular) {
 		DBObject matchAluno = new BasicDBObject("$match", new BasicDBObject("id_aluno", id_aluno));
-		DBObject matchDisciplina = new BasicDBObject("$match", new BasicDBObject("cod_ativ_curricular", cod_ativ_curricular));
+		DBObject matchDisciplina = new BasicDBObject("$match", new BasicDBObject("nome_ativ_curricular", nome_ativ_curricular));
 
 		DBObject id = new BasicDBObject();
 		id.put("id_aluno", "$id_aluno");
-		id.put("cod_ativ_curricular", "$cod_ativ_curricular");
+		id.put("nome_ativ_curricular", "$nome_ativ_curricular");
 		id.put("media_final", "$media_final");
 		id.put("ano", "$ano");
 		id.put("periodo", "$periodo");
@@ -544,6 +603,8 @@ public class AnaliseDeEvasao {
 	
 	public List<List<String>> getDisciplines(String forma_saida, String id_aluno) {
 		List<String> listDisciplinas = getDisciplinesDistintics(forma_saida);
+//		System.out.println("lista de disciplinas");
+//		System.out.println(listDisciplinas.size());
 		List<List<String>> listMedias = new ArrayList<List<String>>();
 
 		for (int j = 0; j < listDisciplinas.size(); j++) {
@@ -581,6 +642,8 @@ public class AnaliseDeEvasao {
 	public String getRepresentante(String forma_saida) {
 		List<String> listAlunos = getAlunos(forma_saida);
 		
+		System.out.println("alunos: " + listAlunos.size());
+		
 		List<List<String>> list = new ArrayList<List<String>>();
 
 		double menorDistancia = 2;
@@ -590,7 +653,7 @@ public class AnaliseDeEvasao {
 //		System.out.println(listAlunos.size());
 		
 //		System.out.println("teste:");
-//		List<List<String>> teste = getDisciplines(forma_saida, "0fb59b53b6701bb7e419ff0d5f634da0");
+//		List<List<String>> teste = getDisciplines(forma_saida, "f84525ce69a13442a3cc024af8f0afd0");
 //		System.out.println(teste);
 		
 		for (int i = 0; i < listAlunos.size(); i++) {
@@ -1074,30 +1137,10 @@ public class AnaliseDeEvasao {
 				listDistancesReprovados.add(listInfo);
 			}
 	}
-//			for (int i = 0; i < listAlunos.size(); i++) {
-//					List<String> listInfo = new ArrayList<String>();
-//					List<Double> vectorCoursesAlunoRepresentante = getVectorCourses(forma_saida, id_representante);
-//					List<Double> vectorCoursesAluno = getVectorCoursesGeral(forma_saida, listAlunos.get(i));
-//
-//					double media = 0.0;
-//					for (int k = 0; k < vectorCoursesAlunoRepresentante.size(); k++) {
-//						double notaA = vectorCoursesAlunoRepresentante.get(k);
-//						double notaB = vectorCoursesAluno.get(k);
-//						double nota_final = 1 - ((Math.abs(notaA - notaB))/10);
-//						media = media + nota_final;
-//					}
-//					media = media/vectorCoursesAlunoRepresentante.size();
-//					listInfo.add(listAlunos.get(i).toString());
-//					listInfo.add(String.valueOf(media));
-//						if (media >= distMax) {
-//							listDistancesAprovados.add(listInfo);
-//						} else {
-//
-//						}
-//						
-//			}
 		System.out.println("tamanho da lista dos alunos em geral classificados como pertences ao perfil");
 		System.out.println(listDistancesAprovados.size());
+		System.out.println("lista de info");
+		System.out.println(listDistancesAprovados);
 		System.out.println(" ");
 		System.out.println("tamanho da lista dos alunos em geral classificados como não pertences ao perfil");
 		System.out.println(listDistancesReprovados.size());
@@ -1111,7 +1154,7 @@ public class AnaliseDeEvasao {
 		AnaliseDeEvasao ativ= new AnaliseDeEvasao("ciencia da computacao");
 		
 		// FORMA O CONJUNTO DE ALUNOS QUE ESTARÃO NO CONJUNTO DO PERFIL SELECIONADO DE ACORDO COM A PORCENTAGEM REQUERIDA
-		ativ.filterByEvasao(0.5);
+		ativ.filterByEvasao(1);
 		
 		// CALCULA A MEDIA DE NOTAS DOS ALUNOS DO CONJUNTO EM CADA DISCIPLINA DO VETOR DE DISCPLINAS QUE FORAM 
 		// SELECIONADAS DENTRO DO CONJUNTO DE DISCIPLINAS FEITAS PELOS ALUNOS DENTRO DO CONJUNTO
@@ -1132,10 +1175,13 @@ public class AnaliseDeEvasao {
 		
 		// VERIFICA QUANTIDADE DE ALUNOS DE DENTRO DO PERFIL PORÉM QUE NÃO ENTRARAM NO CONJUNTO E QUE FORAM CLASSIFICADOS
 		// PELO ALGORITMO COMO PERTENCENTES AO PERFIL 
-		ativ.getResultadosExperimentosDistanceDoPerfil("evasao", representante, distMax);
+//		ativ.getResultadosExperimentosDistanceDoPerfil("evasao", representante, distMax);
 		
 		// VERIFICA QUANTIDADE DE ALUNOS FORA DO PERFIL (RESTO DO MUNDO) QUE FORAM CLASSIFICADOS
 		// PELO ALGORITMO COMO PERTENCENTES AO PERFIL
 		ativ.getResultadosExperimentosDistanceGeral("evasao", representante, distMax);
+		
+		System.out.println("disciplinas");
+		System.out.println(ativ.getDisciplinesDistintics("evasao"));
 	}
 }
